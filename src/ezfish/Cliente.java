@@ -37,16 +37,17 @@ public class Cliente implements Runnable{
     //Sevira para recibir los datos desde el packetlogger
     BufferedReader in;
     DataInputStream in2;
-    Boolean bazaropen=false;
-    Boolean pescando = false;
-    Boolean pescar=false;
-    
+    String TextSearch="";
+    Boolean Encontrado=false;
+    Boolean pescando=false;
     
     public Cliente(int p){
         this.puerto = p;
+        
     }
+    
      @Override
-    public void run() {
+    public void  run() {
 //        PrintWriter out ;
         
 //        DataOutputStream out2;
@@ -54,95 +55,79 @@ public class Cliente implements Runnable{
         try {
             //Realizas la conexion 
             cliente = new Socket("127.0.0.1",puerto);
-            if (cliente.isConnected()) {
-                System.out.println("Conexion establecida");
-                //Aqui leeras los datos
-                in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
-                out = new PrintStream(cliente.getOutputStream());
-                while(true){
-                    
-                    if (in.readLine().equals("0 guri 6 1 13449 30 0") ) {
-                            pescar=true;
-                                
-                            System.out.println("Listo para pescar");
-                    }else{
-                        pescar= false;
-                    }
-                    
-                    if (pescando==false ) {
-                        sleep(1000);
-                        out.print("1 u_s 1 1 13449");
-                        
-                        
-                        pescando=true;
+                if (!TextSearch.isEmpty()) {
+                    if (cliente.isConnected()) {
+                        System.out.println("Conexion establecida");
+                       
+                    //Aqui leeras los datos
+                        while (true) {                            
+                            in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+                                                       
+                            sleep(10);
 
-                    }else{
-                        if (pescar==true) {
-                            out.print("1 u_s 2 1 13449");
-                            
-                            sleep(10000);
-                            pescando=false;
+                            if (in.readLine().equals(TextSearch)) {
+                                    System.out.println("Pescado encontrado");
+                                    Pescar();
+                                    
+                                    
+                                    sleep(7000); 
+                                    free();
+                                    sleep(1500);
+                                    Tirar();
+                            }
+                                                      
                         }
-                        
+                
+                    }else{
+                        System.out.println("No se ha podido establecer conexion");
                     }
-                    //Inicialicas para poder leer desde el packetlogger
-                    //in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
-                    
-                    //caso base: solo leer linea y mostrarla
-                    
-//--------------------------------------------------------------------------------------------------------------------------------------------                    
-                    // los datos que envias tendran 1 adelante ejemplo  1 walk 148 116 0 21
-                    //Los que recibes 0 wopen 32 2 632
-
-                    //Aqui deberas realizar las acciones, dependiendo de lo que quieras leer Ejemplos:                                   
-                    //ESTO es cuando quieres buscar por un identificador en especifico Se corta la linea por espacios
-                    // en este caso walk
-                    
-                    
-                    //Para descomentar y comentar selecciona todas las lineas de codigo que quieres y luego  ctrl+shift+c 
-                    
-                    
-                    
-//--------------------------------------------------------------------------------------------------------------------------------------------
- //                   Puede que haya casos en los que 1 sola string no te sirva para leer el dato que necesitas
- //                     ya que recibes muchos datos y no sera suficiente el tiempo para revisar 1 por 1, asi que podrias5
- //                     agregar mas in.readline();
- 
-//                      Ejemplo: Para saber cuando bazar esta abierto,puedes tratar de probar para que veas
-//                    borra String linea2,linea2 = in.readline y compara solo line1, y veras que aveces no te lee cuando bazar
-//                      esta abierto.
-
-
-
- //Para descomentar y comentar selecciona todas las lineas de codigo que quieres y luego  ctrl+shift+c     
-//                    String linea1 = in.readLine();
-//                    String linea2= in.readLine();
-//                    String linea3= in.readLine();
-//                    if (linea1.equals("0 wopen 32 2 631") || linea2.equals("0 wopen 32 2 631") || linea3.equals("0 wopen 32 2 631")) {
-//                        System.out.println("bazaropen");
-//                    }  
-//--------------------------------------------------------------------------------------------------------------------------------------------                   
-                    
-                    //Cuando quieres buscar un evento en especifico por ejemplo cuando abres bazar
-                  
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                }            
-            }else{
-                System.out.println("No se ha podido establecer conexion");
-            }
+                }else{
+                    System.out.println(TextSearch);
+                }
         } catch (IOException ex) {
-            System.out.println(ex.getCause());
+            System.out.println(ex.getMessage());
         } catch (InterruptedException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-  
+    public void Pescar(){
+        EnviarMensaje("1 u_s 2 1 13449");
+
+    }
+    public void Tirar(){
+        EnviarMensaje("1 u_s 1 1 13449");
+    }
+    public void free(){
+        EnviarMensaje("1 u_s 3 1 13449");
+    }
+    public String getTextSearch() {
+        return TextSearch;
+    }
+
+    public void setTextSearch(String TextSearch) {
+        this.TextSearch = TextSearch;
+    }
+
+    public Boolean getEncontrado() {
+        return Encontrado;
+    }
+
+    public void setEncontrado(Boolean Encontrado) {
+        this.Encontrado = Encontrado;
+    }
+    public void EnviarMensaje(String mensaje){
+        try {
+            cliente = new Socket("localhost",puerto);
+            in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+            out = new PrintStream(cliente.getOutputStream());
+            out.print(mensaje);
+            
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+    }
+    
     
 }
