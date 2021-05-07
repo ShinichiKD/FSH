@@ -31,33 +31,10 @@ public class EzFish {
         Puerto =  teclado.nextInt();
                   
         Cliente cliente = new Cliente(Puerto);
-        Cliente cliente3 = new Cliente(Puerto);
-        Cliente cliente2 = new Cliente(Puerto);
-     Cliente cliente4 = new Cliente(Puerto);
-       
+        cliente.Tirar();
+        cliente.Comenzar();
             
             
-            System.out.println("S");
-        
-            if (pescando==false) {
-              
-                cliente.setTextSearch("0 guri 6 1 13449 30 0");  
-                hilo = new Thread(cliente);
-                hilo.start();
-                
-//                cliente2.setTextSearch("0 guri 6 1 13449 30 0");    
-//                hilo2 = new Thread(cliente2);
-//                hilo2.start();
-                
-                cliente3.setTextSearch("0 guri 6 1 13449 31 0");
-                hilo3 = new Thread(cliente3);
-                hilo3.start();
-//                cliente4.setTextSearch("0 guri 6 1 13449 31 0");
-//                hilo4 = new Thread(cliente4);
-//                hilo4.start();
-                cliente.Tirar();
-                pescando=true;
-            }
             
        
         

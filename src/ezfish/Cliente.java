@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  *
  * @author ShinichiKD
  */
-public class Cliente implements Runnable{
+public class Cliente {
     
     //    Puerto al cual se conectara , en el packet logger tienes Ejemplo: Server: 127.0.0.1:65124 
     //   127.0.0.1 = localhost
@@ -46,48 +46,45 @@ public class Cliente implements Runnable{
         
     }
     
-     @Override
-    public void  run() {
+
+    public void  Comenzar() throws InterruptedException {
 //        PrintWriter out ;
         
 //        DataOutputStream out2;
-
+        System.out.println("Entre");
         try {
             //Realizas la conexion 
             cliente = new Socket("127.0.0.1",puerto);
-                if (!TextSearch.isEmpty()) {
+                
                     if (cliente.isConnected()) {
                         System.out.println("Conexion establecida");
-                       
+                    in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));    
                     //Aqui leeras los datos
-                        while (true) {                            
-                            in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
-                                                       
-                            sleep(10);
-
-                            if (in.readLine().equals(TextSearch)) {
-                                    System.out.println("Pescado encontrado");
-                                    Pescar();
-                                    
-                                    
-                                    sleep(7000); 
-                                    free();
-                                    sleep(1500);
-                                    Tirar();
+                        String linea = in.readLine();
+                        while (linea!=null) {                            
+                            
+                               
+                            if (linea.equals("0 guri 6 1 13449 30 0") ||linea.equals("0 guri 6 1 13449 31 0") ) {
+                                System.out.println("Pez Encontrado");
+                                sleep(10);
+                                Pescar();
+                                sleep(5000);
+                                free();
+                                sleep(3000);
+                                Tirar();
                             }
-                                                      
+                            
+                           
+                            linea=in.readLine();
+                            
                         }
                 
                     }else{
                         System.out.println("No se ha podido establecer conexion");
                     }
-                }else{
-                    System.out.println(TextSearch);
-                }
+                
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     public void Pescar(){
