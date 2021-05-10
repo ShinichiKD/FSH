@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  *
  * @author ShinichiKD
  */
-public class Cliente implements Runnable{
+public class Cliente {
     
     //    Puerto al cual se conectara , en el packet logger tienes Ejemplo: Server: 127.0.0.1:65124 
     //   127.0.0.1 = localhost
@@ -46,59 +46,96 @@ public class Cliente implements Runnable{
         
     }
     
-     @Override
-    public void  run() {
-//        PrintWriter out ;
-        
-//        DataOutputStream out2;
 
+    public void  Comenzar() throws InterruptedException {
+//        PrintWriter out ;
+        Skill Castline;
+        Skill CastlinePRO = new Skill(true,61);
+        Skill BaitFishing = new Skill(true,121);
+        Skill MaintainFishLine = new Skill(true,121);
+//        DataOutputStream out2;
+        System.out.println("Entre");
         try {
             //Realizas la conexion 
             cliente = new Socket("127.0.0.1",puerto);
-                if (!TextSearch.isEmpty()) {
+                
                     if (cliente.isConnected()) {
                         System.out.println("Conexion establecida");
-                       
+                    in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));    
                     //Aqui leeras los datos
-                        while (true) {                            
-                            in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
-                                                       
-                            sleep(10);
-
-                            if (in.readLine().equals(TextSearch)) {
-                                    System.out.println("Pescado encontrado");
-                                    Pescar();
+                        String linea = in.readLine();
+                        while (linea!=null) {                            
+                            
+//                             System.out.println("baitFish:"+BaitFishing.free); 
+//                             System.out.println("MaintainFishLine:"+MaintainFishLine.free);
+//                             System.out.println("CastLinePRO:"+CastlinePRO.free);
+                            
+                            if (linea.equals("0 guri 6 1 13449 30 0") ||linea.equals("0 guri 6 1 13449 31 0") ) {
+                                System.out.println("Pez Encontrado");
+                                sleep(10);
+                                Pescar();
+                                sleep(7000);
+                                
+                                if (BaitFishing.free==true) {
+                                    
+                                    BaitFishing();
+                                    sleep(3000);
+                                    BaitFishing.Comenzar();
+                                    
+                                }
+                                if (MaintainFishLine.free==true) {
+                                    MaintainFishLine();
+                                    sleep(3000);
+                                    MaintainFishLine.Comenzar();
+                                    
+                                }
+                                if (CastlinePRO.free==true) {
+                                    
+                                    CastlinePRO();
+                                   
+                                    CastlinePRO.Comenzar();
                                     
                                     
-                                    sleep(7000); 
-                                    free();
-                                    sleep(1500);
-                                    Tirar();
+                                    
+                                    sleep(3000);
+                                    
+                                    
+                                    
+                                }else{
+                                    CastLine();
+                                    sleep(3000);
+                                }
+                                
                             }
-                                                      
+                            
+                           
+                            linea=in.readLine();
+                            
                         }
                 
                     }else{
                         System.out.println("No se ha podido establecer conexion");
                     }
-                }else{
-                    System.out.println(TextSearch);
-                }
+                
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     public void Pescar(){
         EnviarMensaje("1 u_s 2 1 13449");
 
     }
-    public void Tirar(){
+    public void CastLine(){
         EnviarMensaje("1 u_s 1 1 13449");
     }
-    public void free(){
+    public void BaitFishing(){
         EnviarMensaje("1 u_s 3 1 13449");
+    }
+    public void CastlinePRO(){
+        EnviarMensaje("1 u_s 10 1 13449");
+    }
+    public void MaintainFishLine(){
+        EnviarMensaje("1 u_s 9 1 13449");
     }
     public String getTextSearch() {
         return TextSearch;
