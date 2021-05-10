@@ -49,7 +49,10 @@ public class Cliente {
 
     public void  Comenzar() throws InterruptedException {
 //        PrintWriter out ;
-        
+        Skill Castline;
+        Skill CastlinePRO = new Skill(true,61);
+        Skill BaitFishing = new Skill(true,121);
+        Skill MaintainFishLine = new Skill(true,121);
 //        DataOutputStream out2;
         System.out.println("Entre");
         try {
@@ -63,15 +66,46 @@ public class Cliente {
                         String linea = in.readLine();
                         while (linea!=null) {                            
                             
-                               
+//                             System.out.println("baitFish:"+BaitFishing.free); 
+//                             System.out.println("MaintainFishLine:"+MaintainFishLine.free);
+//                             System.out.println("CastLinePRO:"+CastlinePRO.free);
+                            
                             if (linea.equals("0 guri 6 1 13449 30 0") ||linea.equals("0 guri 6 1 13449 31 0") ) {
                                 System.out.println("Pez Encontrado");
                                 sleep(10);
                                 Pescar();
-                                sleep(5000);
-                                free();
-                                sleep(3000);
-                                Tirar();
+                                sleep(7000);
+                                
+                                if (BaitFishing.free==true) {
+                                    
+                                    BaitFishing();
+                                    sleep(3000);
+                                    BaitFishing.Comenzar();
+                                    
+                                }
+                                if (MaintainFishLine.free==true) {
+                                    MaintainFishLine();
+                                    sleep(3000);
+                                    MaintainFishLine.Comenzar();
+                                    
+                                }
+                                if (CastlinePRO.free==true) {
+                                    
+                                    CastlinePRO();
+                                   
+                                    CastlinePRO.Comenzar();
+                                    
+                                    
+                                    
+                                    sleep(3000);
+                                    
+                                    
+                                    
+                                }else{
+                                    CastLine();
+                                    sleep(3000);
+                                }
+                                
                             }
                             
                            
@@ -91,11 +125,17 @@ public class Cliente {
         EnviarMensaje("1 u_s 2 1 13449");
 
     }
-    public void Tirar(){
+    public void CastLine(){
         EnviarMensaje("1 u_s 1 1 13449");
     }
-    public void free(){
+    public void BaitFishing(){
         EnviarMensaje("1 u_s 3 1 13449");
+    }
+    public void CastlinePRO(){
+        EnviarMensaje("1 u_s 10 1 13449");
+    }
+    public void MaintainFishLine(){
+        EnviarMensaje("1 u_s 9 1 13449");
     }
     public String getTextSearch() {
         return TextSearch;

@@ -31,7 +31,7 @@ public class EzFish {
         Puerto =  teclado.nextInt();
                   
         Cliente cliente = new Cliente(Puerto);
-        cliente.Tirar();
+        cliente.CastLine();
         cliente.Comenzar();
             
             
@@ -43,3 +43,20 @@ public class EzFish {
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
