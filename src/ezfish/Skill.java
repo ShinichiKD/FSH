@@ -18,18 +18,16 @@ public class Skill implements Runnable{
    
     public int tiempoMilisegundos;
     public boolean free;
-    Thread hilo;
+    public Thread hilo;
+    public int count=0;
     public Skill(boolean free,int tiempo){
         this.free = free;
         this.tiempoMilisegundos = tiempo*1000;
         hilo = new Thread(this);
     }
-    public boolean running=true;
-    public void terminar(){
-        running=false;
-    }
+   
     
-    public int count=0;
+    
     @Override
     public void run() {
         free=false;
@@ -60,9 +58,7 @@ public class Skill implements Runnable{
         return free;
     }
 
-    public void setFree(boolean free) {
-        this.free = free;
-    }
+  
     
 }
 
